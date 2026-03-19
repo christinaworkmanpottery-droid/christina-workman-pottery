@@ -159,3 +159,39 @@ a:hover{color:var(--terracotta-dark)}
   .hero{min-height:500px}
   .section{padding:60px 0}
 }
+
+/* ============ CLASSES ============ */
+.classes{background:var(--cream)}
+.classes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.class-card{background:var(--ivory);padding:36px 28px;border-radius:var(--radius-lg);border:1px solid var(--border);text-align:center;transition:transform .2s,box-shadow .2s}
+.class-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.class-icon{font-size:2.5rem;margin-bottom:16px}
+.class-card h3{font-family:var(--font-display);font-size:1.3rem;color:var(--charcoal);margin-bottom:12px}
+.class-card p{color:var(--text-light);font-size:0.95rem;line-height:1.7;margin-bottom:20px}
+@media(max-width:768px){.classes-grid{grid-template-columns:1fr;gap:16px}}
+
+/* ============ MUD ROOM UPGRADED ============ */
+.mudroom{background:var(--warm-brown);padding:60px 0}
+.mudroom-card{text-align:center;max-width:700px;margin:0 auto;background:none;border:none;padding:0}
+.mudroom-icon{font-size:3rem;margin-bottom:16px}
+.mudroom-card h3{font-family:var(--font-display);font-size:1.8rem;color:#fff;margin-bottom:12px}
+.mudroom-card p{color:rgba(255,255,255,0.85);font-size:1.05rem;margin-bottom:20px;line-height:1.7}
+.mudroom-features{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:28px}
+.mudroom-features span{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);padding:8px 16px;border-radius:20px;font-size:0.85rem;font-weight:500}
+.mudroom-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.mudroom-buttons .btn-primary{background:#A0522D;color:#fff}
+.mudroom-buttons .btn-primary:hover{background:#C0633A}
+.mudroom-buttons .btn-outline{border-color:rgba(255,255,255,0.5);color:#fff}
+.mudroom-buttons .btn-outline:hover{background:rgba(255,255,255,0.15);border-color:#fff}
+.mudroom-sub{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:8px}
+
+/* ============ FAQ ============ */
+.faq{background:var(--ivory)}
+.faq-list{max-width:700px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:0}
+.faq-item summary{padding:20px 0;font-size:1.05rem;font-weight:500;color:var(--charcoal);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';font-size:1.5rem;color:var(--terracotta);font-weight:300;transition:transform .2s}
+.faq-item[open] summary::after{content:'−'}
+.faq-item p{padding:0 0 20px;color:var(--text-light);line-height:1.8;font-size:0.95rem}
+.faq-item a{color:var(--terracotta);font-weight:500}
