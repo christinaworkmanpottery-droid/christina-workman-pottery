@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://christinaworkmanpottery.com/sitemap.xml
