@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Christina Workman Pottery</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#FAF7F2;--ivory:#F5F0E8;--terracotta:#A0522D;--terracotta-dark:#8B4513;
+      --warm-brown:#5C4033;--sage:#7C8B6F;--sage-light:#A8B89A;--charcoal:#2C2C2C;
+      --text:#3D3D3D;--text-light:#6B6B6B;--text-muted:#999;--border:#E5DDD3;
+      --shadow:0 2px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+      --radius:8px;--radius-lg:16px;
+      --font-display:'Playfair Display',Georgia,serif;
+      --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    }
+    html{font-size:16px}
+    body{font-family:var(--font-body);color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+    .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .login-card{background:#fff;padding:48px 40px;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);max-width:400px;width:100%;text-align:center}
+    .login-card h1{font-family:var(--font-display);font-size:1.8rem;color:var(--charcoal);margin-bottom:8px}
+    .login-card p{color:var(--text-light);margin-bottom:24px;font-size:0.95rem}
+    .login-card input{width:100%;padding:14px 18px;border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;font-family:var(--font-body);margin-bottom:16px}
+    .login-card input:focus{outline:none;border-color:var(--terracotta)}
+    .login-card button{width:100%;padding:14px;background:var(--terracotta);color:#fff;border:none;border-radius:var(--radius);font-size:1rem;font-weight:500;cursor:pointer;font-family:var(--font-body)}
+    .login-card button:hover{background:var(--terracotta-dark)}
+    .login-error{color:#c0392b;font-size:0.85rem;margin-top:8px;display:none}
+    .admin-wrap{display:none;min-height:100vh}
+    .admin-header{background:var(--charcoal);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .admin-header h1{font-family:var(--font-display);font-size:1.3rem;font-weight:500}
+    .admin-header-links a{color:rgba(255,255,255,0.6);font-size:0.85rem;text-decoration:none;margin-left:16px}
+    .admin-header-links a:hover{color:#fff}
+    .tabs{display:flex;background:var(--ivory);border-bottom:1px solid var(--border);overflow-x:auto}
+    .tab-btn{padding:14px 24px;background:none;border:none;font-family:var(--font-body);font-size:0.9rem;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+    .tab-btn.active{color:var(--terracotta);border-bottom-color:var(--terracotta)}
+    .tab-btn:hover{color:var(--terracotta)}
+    .tab-panel{display:none;padding:32px 24px;max-width:900px;margin:0 auto}
+    .tab-panel.active{display:block}
+    .card{background:#fff;padding:24px;border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:24px}
+    .card h3{font-family:var(--font-display);font-size:1.3rem;color:var(--charcoal);margin-bottom:16px}
+    .card-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--sage);font-weight:600;margin-bottom:8px}
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:24px}
+    .stat-box{background:var(--ivory);padding:20px;border-radius:var(--radius);text-align:center;border:1px solid var(--border)}
+    .stat-number{font-size:2rem;font-weight:600;color:var(--terracotta);font-family:var(--font-display)}
+    .stat-label{font-size:0.8rem;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.08em}
+    .bar-chart{margin-top:16px}
+    .bar-row{display:flex;align-items:center;margin-bottom:8px;gap:12px}
+    .bar-date{font-size:0.8rem;color:var(--text-muted);min-width:70px;text-align:right}
+    .bar-track{flex:1;background:var(--ivory);border-radius:4px;height:24px;overflow:hidden}
+    .bar-fill{height:100%;background:var(--terracotta);border-radius:4px;transition:width 0.4s;min-width:2px}
+    .bar-count{font-size:0.8rem;color:var(--text-light);min-width:30px}
+    .referrer-list{list-style:none}
+    .referrer-list li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.9rem}
+    .referrer-list li:last-child{border-bottom:none}
+    .referrer-url{color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%}
+    .referrer-count{font-weight:600;color:var(--terracotta)}
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:0.85rem;font-weight:500;color:var(--text);margin-bottom:6px}
+    .form-group input,.form-group textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;font-family:var(--font-body);background:#fff}
+    .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--terracotta)}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:600px){.form-row-2{grid-template-columns:1fr}}
+    .btn{display:inline-block;padding:12px 24px;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:var(--terracotta);color:#fff}
+    .btn-primary:hover{background:var(--terracotta-dark)}
+    .btn-danger{background:#c0392b;color:#fff}
+    .btn-danger:hover{background:#a93226}
+    .btn-outline{background:none;border:2px solid var(--terracotta);color:var(--terracotta)}
+    .btn-outline:hover{background:var(--terracotta);color:#fff}
+    .btn-sm{padding:8px 16px;font-size:0.8rem}
+    .btn:disabled{opacity:0.6;cursor:not-allowed}
+    .event-item{display:flex;justify-content:space-between;align-items:flex-start;padding:16px;background:var(--ivory);border-radius:var(--radius);margin-bottom:12px;border:1px solid var(--border);gap:16px}
+    .event-item-info{flex:1;min-width:0}
+    .event-item-info h4{font-family:var(--font-display);font-size:1.1rem;color:var(--charcoal);margin-bottom:4px}
+    .event-item-info p{font-size:0.85rem;color:var(--text-light);margin-bottom:2px}
+    .event-item-actions{display:flex;gap:8px;flex-shrink:0}
+    .event-badge{display:inline-block;background:var(--sage-light);color:#fff;font-size:0.7rem;padding:2px 8px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-left:8px}
+    .event-badge.past{background:var(--text-muted)}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--charcoal);color:#fff;padding:14px 24px;border-radius:var(--radius);font-size:0.9rem;box-shadow:var(--shadow-lg);transform:translateY(100px);opacity:0;transition:all .3s;z-index:999}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.error{background:#c0392b}
+    .gallery-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:16px}
+    .gallery-admin-item{position:relative;aspect-ratio:1;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+    .gallery-admin-item img{width:100%;height:100%;object-fit:cover}
+    .gallery-admin-item .remove-btn{position:absolute;top:4px;right:4px;background:rgba(192,57,43,0.9);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center}
+    .empty-state{text-align:center;padding:32px;color:var(--text-muted);font-size:0.95rem}
+    @media(max-width:600px){
+      .event-item{flex-direction:column}
+      .event-item-actions{align-self:flex-end}
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <h1>👑 Admin Panel</h1>
+    <p>Christina Workman Pottery</p>
+    <form id="loginForm">
+      <input type="password" id="loginPassword" placeholder="Enter password" autofocus>
+      <button type="submit">Sign In</button>
+      <p class="login-error" id="loginError">Incorrect password. Try again.</p>
+    </form>
+  </div>
+</div>
+
+<div class="admin-wrap" id="adminWrap">
+  <header class="admin-header">
+    <h1>👑 Admin Panel</h1>
+    <div class="admin-header-links">
+      <a href="/">← Back to Site</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="traffic">📊 Traffic</button>
+    <button class="tab-btn" data-tab="events">🗓️ Events</button>
+    <button class="tab-btn" data-tab="content">✏️ Content</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-traffic">
+    <div class="card">
+      <h3>Page Views</h3>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-number" id="statToday">0</div><div class="stat-label">Today</div></div>
+        <div class="stat-box"><div class="stat-number" id="statWeek">0</div><div class="stat-label">This Week</div></div>
+        <div class="stat-box"><div class="stat-number" id="statMonth">0</div><div class="stat-label">This Month</div></div>
+        <div class="stat-box"><div class="stat-number" id="statAll">0</div><div class="stat-label">All Time</div></div>
+      </div>
+      <div class="card-label">Last 14 Days</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="card">
+      <h3>Top Referrers</h3>
+      <ul class="referrer-list" id="referrerList">
+        <li class="empty-state">No referrer data yet.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-events">
+    <div class="card">
+      <h3 id="eventFormTitle">Add New Event</h3>
+      <form id="eventForm">
+        <input type="hidden" id="eventEditId" value="">
+        <div class="form-group">
+          <label for="eventName">Event Name *</label>
+          <input type="text" id="eventName" required placeholder="e.g., Spring Art Fair">
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="eventDate">Date *</label>
+            <input type="date" id="eventDate" required>
+          </div>
+          <div class="form-group">
+            <label for="eventTime">Time</label>
+            <input type="text" id="eventTime" placeholder="e.g., 10am – 4pm">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="eventLocation">Location</label>
+          <input type="text" id="eventLocation" placeholder="e.g., Culver City Art Walk">
+        </div>
+        <div class="form-group">
+          <label for="eventDesc">Description</label>
+          <textarea id="eventDesc" rows="3" placeholder="Tell people what to expect…"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="eventLink">Ticket / RSVP Link (optional)</label>
+          <input type="url" id="eventLink" placeholder="https://...">
+        </div>
+        <div style="display:flex;gap:12px">
+          <button type="submit" class="btn btn-primary" id="eventSubmitBtn">Add Event</button>
+          <button type="button" class="btn btn-outline" id="eventCancelBtn" style="display:none">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Current Events</h3>
+      <div id="eventsList"><div class="empty-state">Loading events…</div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-content">
+    <div class="card">
+      <h3>About Section Text</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">Update the About text. Changes are saved to localStorage and visible on your browser.</p>
+      <div class="form-group">
+        <textarea id="aboutText" rows="6" placeholder="Your about text…"></textarea>
+      </div>
+      <button class="btn btn-primary" id="saveAbout">Save About Text</button>
+    </div>
+    <div class="card">
+      <h3>Gallery Images</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">Manage gallery images by URL. Saved to localStorage.</p>
+      <div class="gallery-admin-grid" id="galleryGrid"></div>
+      <div class="form-group">
+        <label for="newImageUrl">Add Image by URL</label>
+        <div style="display:flex;gap:8px">
+          <input type="url" id="newImageUrl" placeholder="https://example.com/image.jpg" style="flex:1">
+          <button class="btn btn-primary" id="addImageBtn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/admin.js"></script>
+</body>
+</html>

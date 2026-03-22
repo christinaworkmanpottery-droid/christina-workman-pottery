@@ -192,10 +192,12 @@
     <div class="container">
       <div class="section-label">Events</div>
       <h2>Upcoming Events</h2>
-      <div class="events-empty">
-        <div class="events-icon">🗓️</div>
-        <p>No upcoming events at the moment.</p>
-        <p class="events-sub">Join the mailing list below to be the first to know about art fairs, workshops, and sales.</p>
+      <div id="eventsContainer">
+        <div class="events-empty" id="eventsEmpty">
+          <div class="events-icon">🗓️</div>
+          <p>No upcoming events at the moment.</p>
+          <p class="events-sub">Join the mailing list below to be the first to know about art fairs, workshops, and sales.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -378,7 +380,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Christina Workman Pottery &mdash; All Rights Reserved.</p>
+        <p>&copy; 2026 Christina Workman Pottery &mdash; All Rights Reserved. <a href="/admin.html" style="opacity:0.3;font-size:0.7rem;text-decoration:none;margin-left:4px" title="Admin">👑</a></p>
         <p class="footer-mudroom">
           <a href="https://thepottersmudroom.com" target="_blank" rel="noopener">The Potter's Mud Room</a> — Track your pottery journey
         </p>
@@ -387,5 +389,69 @@
   </footer>
 
   <script src="/script.js"></script>
+
+  <!-- Traffic Tracking -->
+  <script>
+  (function(){
+    try {
+      var views = JSON.parse(localStorage.getItem('cwp_pageviews') || '[]');
+      views.push({
+        url: location.pathname,
+        date: new Date().toISOString().slice(0, 10),
+        timestamp: new Date().toISOString(),
+        referrer: document.referrer || 'direct'
+      });
+      // Keep max 10000 entries to avoid bloating localStorage
+      if (views.length > 10000) views = views.slice(-10000);
+      localStorage.setItem('cwp_pageviews', JSON.stringify(views));
+    } catch(e) {}
+  })();
+  </script>
+
+  <!-- Dynamic Events from events.json -->
+  <script>
+  (function(){
+    fetch('/events.json?t=' + Date.now())
+      .then(function(r){ return r.json(); })
+      .then(function(events){
+        if (!events || !events.length) return;
+        var now = new Date().toISOString().slice(0, 10);
+        var upcoming = events.filter(function(e){ return e.date >= now; })
+          .sort(function(a,b){ return a.date.localeCompare(b.date); });
+        if (upcoming.length === 0) return;
+
+        var container = document.getElementById('eventsContainer');
+        var empty = document.getElementById('eventsEmpty');
+        if (empty) empty.style.display = 'none';
+
+        var html = '<div class="events-list">';
+        upcoming.forEach(function(ev){
+          var dt = new Date(ev.date + 'T12:00:00');
+          var dateStr = dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+          html += '<div class="event-card">';
+          html += '<div class="event-card-date">';
+          html += '<span class="event-card-month">' + dt.toLocaleDateString('en-US',{month:'short'}) + '</span>';
+          html += '<span class="event-card-day">' + dt.getDate() + '</span>';
+          html += '</div>';
+          html += '<div class="event-card-info">';
+          html += '<h3>' + escH(ev.name) + '</h3>';
+          html += '<p class="event-card-meta">' + dateStr + (ev.time ? ' &middot; ' + escH(ev.time) : '') + '</p>';
+          if (ev.location) html += '<p class="event-card-meta">\ud83d\udccd ' + escH(ev.location) + '</p>';
+          if (ev.description) html += '<p class="event-card-desc">' + escH(ev.description) + '</p>';
+          if (ev.link) html += '<a href="' + escH(ev.link) + '" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:8px;padding:8px 20px;font-size:0.85rem">RSVP / Tickets \u2192</a>';
+          html += '</div></div>';
+        });
+        html += '</div>';
+        container.insertAdjacentHTML('beforeend', html);
+      })
+      .catch(function(e){ console.log('Events load:', e); });
+
+    function escH(s){
+      var d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+  })();
+  </script>
 </body>
 </html>
