@@ -85,11 +85,28 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============ FORMS ============
-document.getElementById('mailingForm').addEventListener('submit', (e) => {
+document.getElementById('mailingForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  document.getElementById('mailingSuccess').classList.add('show');
-  e.target.querySelector('input').value = '';
-  setTimeout(() => document.getElementById('mailingSuccess').classList.remove('show'), 5000);
+  const emailInput = e.target.querySelector('input[type="email"]');
+  const email = emailInput.value;
+  if (!email) return;
+  try {
+    const res = await fetch('https://lucehealing.com/api/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'christina-workman-pottery' })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('mailingSuccess').classList.add('show');
+      emailInput.value = '';
+      setTimeout(() => document.getElementById('mailingSuccess').classList.remove('show'), 5000);
+    }
+  } catch (err) {
+    document.getElementById('mailingSuccess').classList.add('show');
+    emailInput.value = '';
+    setTimeout(() => document.getElementById('mailingSuccess').classList.remove('show'), 5000);
+  }
 });
 
 document.getElementById('contactForm').addEventListener('submit', (e) => {
