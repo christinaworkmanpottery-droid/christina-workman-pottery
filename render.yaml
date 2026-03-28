@@ -10,5 +10,8 @@ services:
         value: public, max-age=86400
     routes:
       - type: rewrite
+        source: /subscribe
+        destination: /subscribe.html
+      - type: rewrite
         source: /*
         destination: /index.html
